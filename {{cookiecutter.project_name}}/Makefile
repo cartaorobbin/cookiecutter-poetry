@@ -41,8 +41,6 @@ clean-build: ## clean build artifacts
 .PHONY: publish
 publish: ## publish a release to pypi.
 	@echo "🚀 Publishing: Dry run."
-
-	
 	{% if cookiecutter.publish_to == "pypi" -%}
 	@poetry config pypi-token.pypi $(PYPI_TOKEN)
 	{%- elif cookiecutter.publish_to == "private_pypi" -%}
