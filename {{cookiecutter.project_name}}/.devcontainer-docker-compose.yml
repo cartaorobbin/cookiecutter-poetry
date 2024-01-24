@@ -9,9 +9,6 @@ services:
       dockerfile: .devcontainer/Dockerfile
       args:
         VARIANT: "ubuntu-22.04"
-    links:
-      - redis:rs
-      - postgres:postgresdb
     volumes:
       - .:/workspace:cached
       - bashhistory:/commandhistory

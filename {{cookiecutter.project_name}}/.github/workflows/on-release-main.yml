@@ -38,6 +38,13 @@ jobs:
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
           {%- endraw -%}
+          {%- elif cookiecutter.publish_to == "private_pypi" -%}
+          {%- raw -%}
+          PRIVATE_PYPI_USERNAME: ${{ secrets.PRIVATE_PYPI_USERNAME }}
+          PRIVATE_PYPI_PASSWORD: ${{ secrets.PRIVATE_PYPI_PASSWORD }}
+          PRIVATE_PYPI_URL: ${{ secrets.PRIVATE_PYPI_URL }}
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+          {%- endraw -%}
           {%- endif %}
   {% endif %}
   {%- if cookiecutter.mkdocs == "y" %}

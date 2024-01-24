@@ -36,15 +36,25 @@ build: clean-build ## Build wheel file using poetry
 clean-build: ## clean build artifacts
 	@rm -rf dist
 
-{%- if cookiecutter.publish_to == "pypi"%}
+{%- if cookiecutter.publish_to in ["pypi", "private_pypi"] %}
 
 .PHONY: publish
 publish: ## publish a release to pypi.
 	@echo "🚀 Publishing: Dry run."
+
+	
+	{% if cookiecutter.publish_to == "pypi" -%}
 	@poetry config pypi-token.pypi $(PYPI_TOKEN)
+	{%- elif cookiecutter.publish_to == "private_pypi" -%}
+	{%- endif %}
 	@poetry publish --dry-run
 	@echo "🚀 Publishing."
+	{% if cookiecutter.publish_to == "pypi" -%}
 	@poetry publish
+	{%- elif cookiecutter.publish_to == "private_pypi" -%}
+	@poetry config repositories.robbin $(PRIVATE_PYPI_URL)
+	@poetry config http-basic.robbin $(PRIVATE_PYPI_USERNAME) $(PRIVATE_PYPI_PASSWORD)
+	{%- endif %}
 
 .PHONY: build-and-publish
 build-and-publish: build publish ## Build and publish.
