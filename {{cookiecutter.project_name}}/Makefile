@@ -44,14 +44,15 @@ publish: ## publish a release to pypi.
 	{% if cookiecutter.publish_to == "pypi" -%}
 	@poetry config pypi-token.pypi $(PYPI_TOKEN)
 	{%- elif cookiecutter.publish_to == "private_pypi" -%}
+	@poetry config repositories.private $(PRIVATE_PYPI_URL)
+	@poetry config http-basic.private $(PRIVATE_PYPI_USERNAME) $(PRIVATE_PYPI_PASSWORD)
 	{%- endif %}
 	@poetry publish --dry-run
 	@echo "🚀 Publishing."
 	{% if cookiecutter.publish_to == "pypi" -%}
 	@poetry publish
 	{%- elif cookiecutter.publish_to == "private_pypi" -%}
-	@poetry config repositories.robbin $(PRIVATE_PYPI_URL)
-	@poetry config http-basic.robbin $(PRIVATE_PYPI_USERNAME) $(PRIVATE_PYPI_PASSWORD)
+	@poetry publish --repository private
 	{%- endif %}
 
 .PHONY: build-and-publish
