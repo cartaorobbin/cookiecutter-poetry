@@ -1,0 +1,47 @@
+name: release-main
+
+on:
+  release:
+    types: [published]
+    branches: [main]
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read
+
+
+jobs:
+  {% if cookiecutter.publish_to != "none" %}
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+
+      - name: Export tag
+        id: vars
+        run: {% raw %}echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT{% endraw %}
+
+    {% block publish %}
+    {% endblock %}
+
+  {% endif %}
+  {%- if cookiecutter.mkdocs == "y" %}
+  deploy-docs:
+    {%- if cookiecutter.publish_to != "none" %}
+    needs: publish
+    {%- endif %}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+
+      - name: Deploy documentation
+        run: poetry run mkdocs gh-deploy --force
+  {% endif %}

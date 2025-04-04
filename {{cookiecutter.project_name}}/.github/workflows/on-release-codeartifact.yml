@@ -1,0 +1,18 @@
+{% extends "on-release-main.yml" %}
+
+{% block publish %}
+      - name: Build
+        run: |
+          source .venv/bin/activate
+          poetry version $RELEASE_VERSION
+          make build
+        env:
+          RELEASE_VERSION: {%- raw -%}${{ steps.vars.outputs.RELEASE_VERSION }}{% endraw %}
+      
+      - name: Publish to CodeArtifact
+        env:
+          CODEARTIFACT_REPOSITORY_NAME: {%- raw -%}${{ vars.CODEARTIFACT_REPOSITORY_NAME }}{% endraw %}
+        run: |
+          source .venv/bin/activate
+          poetry publish -r $CODEARTIFACT_REPOSITORY_NAME
+{% endblock %}

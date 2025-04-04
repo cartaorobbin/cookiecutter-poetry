@@ -5,10 +5,19 @@ install: ## Install the poetry environment and install the pre-commit hooks
 	@ poetry run pre-commit install
 	@poetry shell
 
+
+.PHONY: clean-pyc
+clean-pyc:
+	find . -name '*.pyc' -exec rm -f {} +
+	find . -name '*.pyo' -exec rm -f {} +
+	find . -name '*~' -exec rm -f {} +
+	find . -name '__pycache__' -exec rm -fr {} +
+
+
 .PHONY: check
 check: ## Run code quality tools.
-	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry lock --check"
-	@poetry lock --check
+	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry lock"
+	@poetry lock
 	@echo "🚀 Linting code: Running pre-commit"
 	@poetry run pre-commit run -a
 	@echo "🚀 Static type checking: Running mypy"

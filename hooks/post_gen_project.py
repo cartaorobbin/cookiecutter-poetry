@@ -19,6 +19,14 @@ if __name__ == "__main__":
     else:
         if "{{cookiecutter.mkdocs}}" != "y" and "{{cookiecutter.publish_to}}" == "none":
             remove_file(".github/workflows/on-release-main.yml")
+        if "{{cookiecutter.publish_to}}" == "codeartifact":
+            remove_file(".github/workflows/on-release-pypi.yml")
+            remove_file(".github/workflows/on-release-private-pypi.yml")
+
+        else:
+            remove_dir(".github/actions/codeartifact-login")
+            remove_file(".github/workflows/on-release-codeartifact.yml")
+            
 
     if "{{cookiecutter.mkdocs}}" != "y":
         remove_dir("docs")
