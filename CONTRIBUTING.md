@@ -51,7 +51,43 @@ If you are proposing a new feature:
 # Get Started!
 
 Ready to contribute? Here\'s how to set up
-`cookiecutter-poetry` for local development. Please note
+`cookiecutter-poetry` for local development. You can choose between two approaches:
+
+## Option A: Development Container (Recommended)
+
+The easiest way to get started is using the provided devcontainer:
+
+1. Fork the `cookiecutter-poetry` repo on GitHub.
+
+2. Clone your fork locally:
+
+``` bash
+cd <directory_in_which_repo_should_be_created>
+git clone git@github.com:YOUR_NAME/cookiecutter-poetry.git
+```
+
+3. Open the project in VS Code or any editor that supports devcontainers:
+
+``` bash
+cd cookiecutter-poetry
+code .
+```
+
+4. When prompted, click "Reopen in Container" or run the command "Dev Containers: Reopen in Container" from the VS Code command palette.
+
+The devcontainer will automatically:
+- Set up Python 3.11
+- Install Poetry and configure it
+- Install all project dependencies
+- Set up pre-commit hooks
+- Install development tools and VS Code extensions
+- Configure the environment for optimal development
+
+You're ready to develop! Skip to step 5 in the manual setup below.
+
+## Option B: Manual Setup
+
+If you prefer to set up the environment manually, please note
 this documentation assumes you already have `poetry` and
 `git` installed and ready to go.
 
@@ -59,10 +95,10 @@ this documentation assumes you already have `poetry` and
 
 2. Clone your fork locally:
 
-  ``` bash
-  cd <directory_in_which_repo_should_be_created
-  git clone git@github.com:YOUR_NAME/cookiecutter-poetry.git
-  ```
+``` bash
+cd <directory_in_which_repo_should_be_created>
+git clone git@github.com:YOUR_NAME/cookiecutter-poetry.git
+```
 
 3. Now we need to install the environment. Navigate into the project directory:
 

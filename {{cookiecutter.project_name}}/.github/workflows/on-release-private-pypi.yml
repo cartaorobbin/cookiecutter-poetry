@@ -1,4 +1,4 @@
-{% extends "./on-release-main.yml" %}
+{% extends "on-release-main.yml" %}
 
 {% block publish %}
 {%- raw -%}

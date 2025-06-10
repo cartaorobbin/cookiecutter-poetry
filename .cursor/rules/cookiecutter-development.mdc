@@ -1,0 +1,239 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Cookiecutter-Poetry Development Rules
+
+This document contains development guidelines and rules for working on the **cookiecutter-poetry** project itself. These rules are designed to ensure consistent, high-quality cookiecutter template development and effective collaboration.
+
+## Core Development Principles
+
+### 1. Plan Before Coding ⭐
+**ALWAYS plan before writing any code or making changes to the template.**
+
+- **Think first, code second**: Before touching any template files, understand the problem and design the solution
+- **Use planning files**: ALWAYS maintain `plan.md` to track what we're doing and why
+- **Document decisions**: Record important decisions about template structure and features
+- **Consider template users**: Think about how changes affect users generating projects from the template
+- **Break down complex features**: Split large template features into smaller, manageable pieces
+
+### 2. Task Management with Planning Files ⭐
+**ALWAYS maintain planning files to track development progress.**
+
+- **Use plan.md**: Keep an active `plan.md` file in the root for current development tasks
+- **Task Flow**: Move tasks through TODO → IN PROGRESS → TESTING → DONE
+- **Focus Management**: Keep active tasks focused (max 1-3 active task groups)
+- **Document completion**: Mark tasks as completed with ✅ when finished
+- **Reference issues/PRs**: Link to relevant GitHub issues or pull requests
+- **Track decisions**: Record why certain template design decisions were made
+
+## Cookiecutter Template Development Guidelines
+
+### Template Structure Best Practices
+- **Template directory**: All template files go in `{{cookiecutter.project_name}}/`
+- **Template variables**: Use meaningful cookiecutter variables in `cookiecutter.json`
+- **Conditional features**: Implement optional features with clear on/off switches
+- **File organization**: Mirror the structure that generated projects should have
+- **Documentation**: Keep template documentation updated in `docs/`
+
+### Template Variable Guidelines
+- **Meaningful names**: Use descriptive variable names in `cookiecutter.json`
+- **Default values**: Provide sensible defaults for all variables
+- **Validation**: Consider what values make sense for each variable
+- **Consistency**: Use consistent naming patterns across variables
+- **Documentation**: Document what each variable does in README.md
+
+### Conditional Features Implementation
+- **Boolean choices**: Use `["y", "n"]` pattern for feature toggles
+- **Post-generation hooks**: Use `hooks/post_gen_project.py` for cleanup
+- **Template inheritance**: Be careful with Jinja2 template inheritance (avoid relative paths)
+- **Testing both states**: Always test both enabled and disabled feature states
+- **Documentation**: Document each feature in README.md
+
+## Development Environment Workflow
+
+### Devcontainer Usage
+- **Primary environment**: Use the devcontainer for all development
+- **Poetry managed**: All dependencies managed through Poetry
+- **Pre-commit hooks**: Always run pre-commit before committing
+- **Testing environment**: Use `/tmp/test-projects` for generating test projects
+
+### Development Commands
+```bash
+# Setup development environment
+poetry install
+poetry run pre-commit install
+
+# Test template generation
+poetry run cookiecutter . --no-input --overwrite-if-exists -o /tmp/test-projects
+
+# Test specific feature combinations
+poetry run cookiecutter . --no-input --overwrite-if-exists cursor_support=y mkdocs=y -o /tmp/test-projects
+
+# Run quality checks
+poetry run pytest
+poetry run ruff check .
+poetry run mypy cookiecutter_poetry
+poetry run pre-commit run --all-files
+```
+
+### Testing Cookiecutter Templates
+- **Test all feature combinations**: Verify optional features work correctly
+- **Test with different inputs**: Try various project names and configurations
+- **Verify file generation**: Check that all expected files are created
+- **Template variable substitution**: Ensure variables are properly replaced
+- **Post-generation hooks**: Verify cleanup logic works correctly
+- **Documentation accuracy**: Ensure generated projects match documentation
+
+## File Structure Guidelines
+
+### Cookiecutter-Poetry Repository Structure
+```
+cookiecutter-poetry/
+├── .cursor/                    # Cursor rules for this project
+│   └── rules/
+│       └── cookiecutter-development.mdc
+├── .devcontainer/              # Development container configuration
+│   ├── devcontainer.json
+│   └── setup.sh
+├── {{cookiecutter.project_name}}/  # Template directory
+│   ├── .cursor/               # Template for generated Cursor rules
+│   ├── .github/               # Template GitHub workflows
+│   ├── docs/                  # Template documentation
+│   └── ... (template files)
+├── hooks/                     # Post-generation hooks
+│   └── post_gen_project.py
+├── docs/                      # Project documentation
+├── tests/                     # Template tests
+├── plan.md                    # Current development plan
+├── cookiecutter.json          # Template configuration
+└── pyproject.toml             # Project dependencies
+```
+
+### Template Development Patterns
+- **Feature flags**: Add new features as optional in `cookiecutter.json`
+- **Cleanup logic**: Always add cleanup logic in `post_gen_project.py`
+- **Documentation**: Update README.md when adding new features
+- **Testing**: Add tests in `tests/test_cookiecutter.py`
+- **Examples**: Provide examples in documentation
+
+## Quality Standards
+
+### Code Quality for Template Files
+- **Valid syntax**: Ensure template files have valid syntax for their type
+- **Jinja2 templates**: Use proper Jinja2 syntax and avoid complex logic
+- **YAML/JSON**: Validate YAML and JSON template files
+- **Python code**: Follow PEP 8 for any Python template files
+- **Dependencies**: Keep template dependencies up to date
+
+### Documentation Standards
+- **README clarity**: Keep README.md clear and comprehensive
+- **Feature documentation**: Document each optional feature thoroughly
+- **Examples**: Provide real examples of generated projects
+- **Changelog**: Maintain a changelog for template updates
+- **Contributing guide**: Keep CONTRIBUTING.md updated
+
+### Testing Standards
+- **Feature coverage**: Test all optional features
+- **Combination testing**: Test feature combinations
+- **Generated project validation**: Verify generated projects work correctly
+- **CI/CD testing**: Ensure tests pass in CI/CD environment
+- **Performance**: Keep template generation fast
+
+## Cookiecutter-Specific Best Practices
+
+### Template Variable Design
+- **Single responsibility**: Each variable should have a clear, single purpose
+- **Validation**: Consider input validation needs
+- **Defaults**: Choose defaults that work for most users
+- **Grouping**: Group related variables logically in cookiecutter.json
+
+### Post-Generation Hook Patterns
+- **Conditional cleanup**: Remove files/directories based on feature flags
+- **Error handling**: Handle cleanup errors gracefully
+- **Logging**: Use clear error messages
+- **Idempotency**: Ensure hooks can be run multiple times safely
+
+### Template Inheritance Gotchas
+- **Relative paths**: Avoid relative paths in Jinja2 extends statements
+- **Template context**: Be aware of template rendering context
+- **File dependencies**: Consider template file dependencies
+- **Debugging**: Use clear error messages for template issues
+
+## Common Development Workflows
+
+### Adding a New Optional Feature
+1. **Plan the feature** in `plan.md`
+2. Add feature flag to `cookiecutter.json`
+3. Create template files for the feature
+4. Add cleanup logic to `post_gen_project.py`
+5. Update README.md documentation
+6. Add tests for both enabled/disabled states
+7. Test with other feature combinations
+8. Update plan.md with completion status
+
+### Template Structure Changes
+1. **Document the change** in `plan.md`
+2. Update template files
+3. Test generated project structure
+4. Update documentation
+5. Update tests if needed
+6. Consider migration path for existing users
+
+### Development Environment Updates
+1. **Plan the update** (new tools, dependencies, etc.)
+2. Update `.devcontainer/` configuration
+3. Update `pyproject.toml` dependencies
+4. Update setup scripts
+5. Test in fresh devcontainer
+6. Update documentation
+
+## Troubleshooting
+
+### Common Template Issues
+- **Jinja2 syntax errors**: Check template syntax carefully
+- **Variable substitution**: Ensure all variables are defined
+- **File permissions**: Check generated file permissions
+- **Template inheritance**: Verify extends statements work correctly
+- **Hook failures**: Debug post-generation hook issues
+
+### Development Environment Issues
+- **Poetry conflicts**: Use `poetry lock --no-update` to resolve
+- **Pre-commit failures**: Run `poetry run pre-commit clean`
+- **Container issues**: Rebuild devcontainer if needed
+- **Testing failures**: Check template generation logic
+
+### Testing Issues
+- **Flaky tests**: Ensure tests are deterministic
+- **Timeout issues**: Check for infinite loops in templates
+- **File conflicts**: Use `--overwrite-if-exists` for testing
+- **Path issues**: Verify file paths in tests
+
+## Project-Specific Guidelines
+
+### Cookiecutter-Poetry Specific Rules
+- **Poetry focus**: This template is specifically for Poetry-based projects
+- **Modern Python**: Target modern Python versions and best practices
+- **Optional features**: Keep core simple, make advanced features optional
+- **Documentation**: Maintain excellent documentation for template users
+- **Community**: Consider community feedback and contributions
+
+### Version Management
+- **Semantic versioning**: Use semantic versioning for template releases
+- **Breaking changes**: Document breaking changes clearly
+- **Migration guides**: Provide migration guides for major changes
+- **Deprecation**: Handle feature deprecation gracefully
+
+---
+
+**Remember**: Plan first, implement second, test thoroughly! 🚀
+
+When working on cookiecutter-poetry:
+1. **Update plan.md** with what you're going to do
+2. **Implement the changes** following these guidelines
+3. **Test thoroughly** with various feature combinations
+4. **Update documentation** to reflect changes
+5. **Mark tasks complete** in plan.md
+
+This ensures consistent, high-quality development of the cookiecutter template and helps maintain the project's excellence over time.

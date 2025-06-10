@@ -24,6 +24,7 @@ This is a modern Cookiecutter template that can be used to initiate a Python pro
 - Documentation with [MkDocs](https://www.mkdocs.org/)
 - Compatibility testing for multiple versions of Python with [Tox](https://tox.wiki/en/latest/)
 - Containerization with [Docker](https://www.docker.com/)
+- IDE integration with [Cursor](https://cursor.sh/) development rules and guidelines
 
 ---
 <p align="center">
@@ -81,6 +82,19 @@ To finalize the set-up for publishing to PyPi or Artifactory, see
 For activating the automatic documentation with MkDocs, see
 [here](https://fpgmaas.github.io/cookiecutter-poetry/features/mkdocs/#enabling-the-documentation-on-github).
 To enable the code coverage reports, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/codecov/).
+
+## Cursor IDE Integration
+
+When you enable `cursor_support` during project generation, the template will create a `.cursor/rules/development.mdc` file containing comprehensive development guidelines. This file includes:
+
+- **Core Development Principles**: Plan-first approach and task management workflows
+- **Poetry-specific workflows**: Dependency management, virtual environments, and version handling
+- **Code quality standards**: Formatting, linting, and type checking guidelines
+- **Testing conventions**: pytest usage, coverage requirements, and test organization
+- **Git workflows**: Branch strategies, commit guidelines, and PR processes
+- **Planning methodology**: Structured approach using `planning/` directory with `general.md`, `backlog.md`, and `done.md`
+
+The development rules emphasize a "plan before coding" approach and include a complete task management system to keep your development organized and focused.
 
 ## Acknowledgements
 

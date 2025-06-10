@@ -7,11 +7,34 @@
           poetry version $RELEASE_VERSION
           make build
         env:
-          RELEASE_VERSION: {%- raw -%}${{ steps.vars.outputs.RELEASE_VERSION }}{% endraw %}
+          RELEASE_VERSION: {% raw %}${{ steps.vars.outputs.tag }}{% endraw %}
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::{% raw %}${{ vars.AWS_ACCOUNT_ID }}{% endraw %}:role/github
+          aws-region: us-east-1
+
+      - name: Retrieve CodeArtifact token
+        id: codeartifact-token
+        run: echo "TOKEN=$(aws codeartifact get-authorization-token --domain {% raw %}${{ vars.CODEARTIFACT_DOMAIN }}{% endraw %} --domain-owner {% raw %}${{ vars.CODEARTIFACT_OWNER }}{% endraw %} --query authorizationToken --output text)" >> $GITHUB_ENV
       
+      - name: Retrieve CodeArtifact repository URL
+        id: codeartifact-url
+        run: echo "REPOSITORY_URL=$(aws codeartifact get-repository-endpoint --domain {% raw %}${{ vars.CODEARTIFACT_DOMAIN }}{% endraw %} --domain-owner {% raw %}${{ vars.CODEARTIFACT_OWNER }}{% endraw %} --repository {% raw %}${{ vars.CODEARTIFACT_REPOSITORY_NAME }}{% endraw %} --format pypi --query repositoryEndpoint --output text)" >> $GITHUB_ENV
+        
+      - name: Authenticate to CodeArtifact
+        uses: ./.github/actions/codeartifact-login
+        with:
+          role-to-assume: arn:aws:iam::{% raw %}${{ vars.AWS_ACCOUNT_ID }}{% endraw %}:role/github
+          codeartifact-domain: {% raw %}${{ vars.CODEARTIFACT_DOMAIN }}{% endraw %}
+          codeartifact-domain-owner: {% raw %}${{ vars.CODEARTIFACT_OWNER }}{% endraw %}
+          codeartifact-repository: {% raw %}${{ vars.CODEARTIFACT_REPOSITORY_NAME }}{% endraw %}
+          configure-poetry: true
+
+
       - name: Publish to CodeArtifact
         env:
-          CODEARTIFACT_REPOSITORY_NAME: {%- raw -%}${{ vars.CODEARTIFACT_REPOSITORY_NAME }}{% endraw %}
+          CODEARTIFACT_REPOSITORY_NAME: {% raw %}${{ vars.CODEARTIFACT_REPOSITORY_NAME }}{% endraw %}
         run: |
           source .venv/bin/activate
           poetry publish -r $CODEARTIFACT_REPOSITORY_NAME

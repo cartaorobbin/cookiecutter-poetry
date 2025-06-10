@@ -7,18 +7,12 @@ repository = "https://github.com/fpgmaas/cookiecutter-poetry"
 documentation = "https://fpgmaas.github.io/cookiecutter-poetry/"
 readme = "README.md"
 keywords = ['cookiecutter', 'template', 'poetry']
-packages = [
-  {include = "cookiecutter_poetry"}
-]
-include = [
-  '{{cookiecutter.project_name}}/**/*',
-  'cookiecutter.json',
-  'hooks/*'
-]
+packages = [{ include = "cookiecutter_poetry" }]
+include = ['{{cookiecutter.project_name}}/**/*', 'cookiecutter.json', 'hooks/*']
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
-cookiecutter = "^2.1.1"
+cookiecutter = "^2.6.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
@@ -64,52 +58,52 @@ warn_unused_ignores = "True"
 show_error_codes = "True"
 
 [tool.deptry]
-extend_exclude = [
-  "{{cookiecutter.project_name}}"
-]
+extend_exclude = ["{{cookiecutter.project_name}}"]
 ignore_obsolete = ["cookiecutter"]
 
 [tool.ruff]
 target-version = "py37"
 line-length = 120
 fix = true
+exclude = ["{{cookiecutter.project_name}}"]
 select = [
-    # flake8-2020
-    "YTT",
-    # flake8-bandit
-    "S",
-    # flake8-bugbear
-    "B",
-    # flake8-builtins
-    "A",
-    # flake8-comprehensions
-    "C4",
-    # flake8-debugger
-    "T10",
-    # flake8-simplify
-    "SIM",
-    # isort
-    "I",
-    # mccabe
-    "C90",
-    # pycodestyle
-    "E", "W",
-    # pyflakes
-    "F",
-    # pygrep-hooks
-    "PGH",
-    # pyupgrade
-    "UP",
-    # ruff
-    "RUF",
-    # tryceratops
-    "TRY",
+  # flake8-2020
+  "YTT",
+  # flake8-bandit
+  "S",
+  # flake8-bugbear
+  "B",
+  # flake8-builtins
+  "A",
+  # flake8-comprehensions
+  "C4",
+  # flake8-debugger
+  "T10",
+  # flake8-simplify
+  "SIM",
+  # isort
+  "I",
+  # mccabe
+  "C90",
+  # pycodestyle
+  "E",
+  "W",
+  # pyflakes
+  "F",
+  # pygrep-hooks
+  "PGH",
+  # pyupgrade
+  "UP",
+  # ruff
+  "RUF",
+  # tryceratops
+  "TRY",
 ]
 ignore = [
-    # LineTooLong
-    "E501",
-    # DoNotAssignLambda
-    "E731",
+  # LineTooLong
+  "E501",
+  # DoNotAssignLambda
+  "E731",
 ]
 
 [tool.ruff.per-file-ignores]
