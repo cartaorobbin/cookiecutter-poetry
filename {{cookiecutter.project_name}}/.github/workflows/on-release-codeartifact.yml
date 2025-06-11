@@ -1,6 +1,29 @@
-{% extends "on-release-main.yml" %}
+name: release-main
 
-{% block publish %}
+on:
+  release:
+    types: [published]
+    branches: [main]
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read
+
+jobs:
+{% if cookiecutter.publish_to == "codeartifact" %}
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+
+      - name: Export tag
+        id: vars
+        run: {% raw %}echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT{% endraw %}
+
       - name: Build
         run: |
           source .venv/bin/activate
@@ -31,11 +54,27 @@
           codeartifact-repository: {% raw %}${{ vars.CODEARTIFACT_REPOSITORY_NAME }}{% endraw %}
           configure-poetry: true
 
-
       - name: Publish to CodeArtifact
         env:
           CODEARTIFACT_REPOSITORY_NAME: {% raw %}${{ vars.CODEARTIFACT_REPOSITORY_NAME }}{% endraw %}
         run: |
           source .venv/bin/activate
           poetry publish -r $CODEARTIFACT_REPOSITORY_NAME
-{% endblock %}
+
+{% endif %}
+{%- if cookiecutter.mkdocs == "y" %}
+  deploy-docs:
+    {% if cookiecutter.publish_to == "codeartifact" -%}
+    needs: publish
+    {% endif -%}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+
+      - name: Deploy documentation
+        run: poetry run mkdocs gh-deploy --force
+{% endif %}

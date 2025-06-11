@@ -17,16 +17,31 @@ if __name__ == "__main__":
     if "{{cookiecutter.include_github_actions}}" != "y":
         remove_dir(".github")
     else:
-        if "{{cookiecutter.mkdocs}}" != "y" and "{{cookiecutter.publish_to}}" == "none":
-            remove_file(".github/workflows/on-release-main.yml")
-        if "{{cookiecutter.publish_to}}" == "codeartifact":
+        # Handle workflow cleanup based on publish_to setting
+        publish_to = "{{cookiecutter.publish_to}}"
+
+        # Keep only the correct publishing workflow
+        if publish_to == "pypi":
+            remove_file(".github/workflows/on-release-private-pypi.yml")
+            remove_file(".github/workflows/on-release-codeartifact.yml")
+            remove_dir(".github/actions/codeartifact-login")
+        elif publish_to == "private_pypi":
+            remove_file(".github/workflows/on-release-pypi.yml")
+            remove_file(".github/workflows/on-release-codeartifact.yml")
+            remove_dir(".github/actions/codeartifact-login")
+        elif publish_to == "codeartifact":
             remove_file(".github/workflows/on-release-pypi.yml")
             remove_file(".github/workflows/on-release-private-pypi.yml")
-
-        else:
-            remove_dir(".github/actions/codeartifact-login")
+        elif publish_to == "none":
+            remove_file(".github/workflows/on-release-pypi.yml")
+            remove_file(".github/workflows/on-release-private-pypi.yml")
             remove_file(".github/workflows/on-release-codeartifact.yml")
-            
+            remove_dir(".github/actions/codeartifact-login")
+        else:  # artifactory or unknown
+            remove_file(".github/workflows/on-release-pypi.yml")
+            remove_file(".github/workflows/on-release-private-pypi.yml")
+            remove_file(".github/workflows/on-release-codeartifact.yml")
+            remove_dir(".github/actions/codeartifact-login")
 
     if "{{cookiecutter.mkdocs}}" != "y":
         remove_dir("docs")

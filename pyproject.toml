@@ -23,6 +23,7 @@ deptry = "^0.6.4"
 mypy = "^0.991"
 pytest-cov = "^4.0.0"
 ruff = "^0.0.235"
+pyyaml = "^6.0.2"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.4.2"
